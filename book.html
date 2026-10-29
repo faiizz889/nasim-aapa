@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; frame-src https://maps.google.com https://www.google.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Book a Visit | Nasim Aapa Kapadwala, Ahmedabad</title>
+<meta name="description" content="Book a visit or fitting at our Dariyapur, Juhapura or Bhadra branch in Ahmedabad.">
+<meta name="theme-color" content="#0B0A09"><link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@400;500&family=Pinyon+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"></head><body>
+<main>
+<section class="phero"><div><p class="script fadeup">Book a visit</p><h1 class="split"><span><i>Reserve your time.</i></span></h1><p class="hero__lede fadeup">Choose a branch, a day and a slot. We will confirm on WhatsApp and keep your pieces ready.</p></div></section>
+<section class="section"><div class="wrap cgrid">
+ <form class="form" id="bform">
+  <div class="row"><div class="field"><label for="bn">Name</label><input id="bn" name="name" required maxlength="60" autocomplete="name"></div><div class="field"><label for="bp">Phone</label><input id="bp" name="phone" type="tel" required maxlength="20" inputmode="tel" autocomplete="tel"></div></div>
+  <div class="row"><div class="field"><label for="bbr">Branch</label><select id="bbr" name="branch"></select></div><div class="field"><label for="bu">I am coming for</label><select id="bu" name="purpose"><option>Bridal shopping</option><option>Custom stitching and measurements</option><option>Trial fitting</option><option>Dress materials</option><option>Readymade outfits</option></select></div></div>
+  <div class="row"><div class="field"><label for="bdate">Date</label><input id="bdate" name="date" type="date" required></div><div class="field"><label for="bt">Time</label><select id="bt" name="time"><option>11:00 am</option><option>1:00 pm</option><option>3:00 pm</option><option>5:00 pm</option><option>7:00 pm</option></select></div></div>
+  <div class="field"><label for="bg">People coming</label><select id="bg" name="guests"><option>1</option><option>2</option><option>3 to 4</option><option>5 or more</option></select></div>
+  <div class="field"><label for="bno">Notes</label><textarea id="bno" name="notes" maxlength="400" placeholder="Occasion, colours, budget, anything we should prepare"></textarea></div>
+  <div class="hp" aria-hidden="true"><label>Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label></div><button class="btn btn--gold" type="submit">Request on WhatsApp</button><p class="ok" id="bok" role="status"></p></form>
+ <div><h2 class="title" style="font-size:clamp(30px,3.4vw,46px)">Our branches</h2><div class="bcards" id="binfo"></div><p class="sub" style="margin-top:20px;font-size:14px">Saved pieces from your wishlist are added to the message automatically.</p></div>
+</div></section>
+</main><script src="script.js"></script></body></html>

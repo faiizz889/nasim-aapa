@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; frame-src https://maps.google.com https://www.google.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contact | Nasim Aapa Kapadwala, Ahmedabad</title>
+<meta name="description" content="Visit our three Ahmedabad branches in Dariyapur, Juhapura and Bhadra, or message us on WhatsApp.">
+<meta property="og:title" content="Contact | Nasim Aapa Kapadwala"><meta property="og:description" content="Visit our three Ahmedabad branches in Dariyapur, Juhapura and Bhadra, or message us on WhatsApp."><meta property="og:type" content="website">
+<meta name="theme-color" content="#0B0A09"><link rel="icon" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@400;500&family=Pinyon+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"></head><body>
+<main>
+<section class="phero"><div><p class="script fadeup">Contact</p><h1 class="split"><span><i>Visit or message us.</i></span></h1></div></section>
+<section class="section"><div class="wrap cgrid">
+ <div><h2 class="title">Tell us what you need</h2><p class="sub">Send your details and we will open WhatsApp with your message ready.</p>
+  <form class="form" id="cform"><div class="field"><label for="n">Name</label><input id="n" name="name" required maxlength="60" autocomplete="name"></div>
+  <div class="field"><label for="p">Phone</label><input id="p" name="phone" type="tel" required maxlength="20" inputmode="tel" autocomplete="tel"></div>
+  <div class="field"><label for="fbr">Branch</label><select id="fbr" name="branch"></select></div>
+  <div class="field"><label for="o">Occasion</label><select id="o" name="occ"><option>Nikah</option><option>Mehndi</option><option>Walima</option><option>Sangeet</option><option>Everyday</option></select></div>
+  <div class="field"><label for="m">Message</label><textarea id="m" name="msg" maxlength="400" placeholder="Colour, fabric, date needed"></textarea></div>
+  <div class="hp" aria-hidden="true"><label>Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label></div><button class="btn btn--gold" type="submit">Send on WhatsApp</button><p class="ok" id="ok" role="status"></p></form></div>
+ <div><div class="bwrap"><div class="bcards" id="bcards"></div><iframe class="map" id="map" title="Branch map" loading="lazy"></iframe></div></div>
+</div></section>
+</main>
+<script src="script.js"></script></body></html>
