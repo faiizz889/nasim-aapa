@@ -51,15 +51,26 @@ document.documentElement.dataset.theme = theme;
 const pages = [['Home','index.html'],['Collection','collection.html'],['Gallery','gallery.html'],['About','about.html'],['Contact','contact.html']];
 const here = location.pathname.split('/').pop() || 'index.html';
 const first = !sessionStorage.getItem('nk');
+const letters = t => [...t].map((c, i) => `<span style="--i:${i}">${c === ' ' ? '&nbsp;' : esc(c)}</span>`).join('');
 document.body.insertAdjacentHTML('afterbegin', `
  ${first ? `<div class="loader" id="loader" aria-hidden="true"><svg viewBox="0 0 200 200" width="140" height="140"><circle cx="100" cy="100" r="92"/><circle cx="100" cy="100" r="82"/><text x="100" y="118" text-anchor="middle">NK</text></svg></div>` : ''}
  <div class="prog" id="prog"></div><div class="curtain" id="curtain"></div><div class="cur" id="cur"></div>
- <header class="header" id="header"><a href="index.html" class="brand" aria-label="Nasim Aapa Kapadwala home"><img src="images/logo.png" alt="" width="44" height="44"><b>Nasim Aapa<small>Kapadwala</small></b></a>
- <nav class="nav" id="nav" aria-label="Main">${pages.map(([t,h]) => `<a href="${h}" ${h === here ? 'class="cur-page" aria-current="page"' : ''}>${t}</a>`).join('')}<a class="nav-book" href="book.html">Book a Visit</a></nav>
- <div class="hend"><a class="wishlink" href="wishlist.html" aria-label="Saved pieces"><svg viewBox="0 0 24 24"><path d="M12 21s-8-5.200-8-11a4.500 4.500 0 0 1 8-2.800A4.500 4.500 0 0 1 20 10c0 5.800-8 11-8 11Z"/></svg><span id="wc" hidden></span></a>
- <a class="btn btn--gold btn--sm" href="book.html">Book a Visit</a>
- <button class="theme" id="theme" aria-label="Switch to dark mode"><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.500A8 8 0 0 1 9.500 4 8 8 0 1 0 20 14.500Z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></svg></button>
- <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><i></i><i></i></button></div></header>`);
+ <a class="skip" href="#main">Skip to content</a>
+ <header class="nb" id="header"><span class="nb-bg" aria-hidden="true"></span>
+  <a href="index.html" class="nb-brand" aria-label="Nasim Aapa Kapadwala, home">
+   <span class="logo"><span class="gems" aria-hidden="true"></span><i class="mono" aria-hidden="true">NK</i><img src="images/logo.png" alt="" width="64" height="64"><span class="shine" aria-hidden="true"></span></span>
+   <b class="nm"><span class="nm1" aria-hidden="true">${letters('Nasim Aapa')}</span><small>Kapadwala</small></b>
+  </a>
+  <nav class="nb-links" id="nav" aria-label="Main"><span class="nb-ind" aria-hidden="true"></span>${pages.map(([t,h]) => `<a href="${h}" ${h === here ? 'class="cur-page" aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
+  <div class="nb-end"><a class="wishlink" href="wishlist.html" aria-label="Saved pieces"><svg viewBox="0 0 24 24"><path d="M12 21s-8-5.200-8-11a4.500 4.500 0 0 1 8-2.800A4.500 4.500 0 0 1 20 10c0 5.800-8 11-8 11Z"/></svg><span id="wc" hidden></span></a>
+   <button class="theme" id="theme" aria-label="Switch to dark mode"><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.500A8 8 0 0 1 9.500 4 8 8 0 1 0 20 14.500Z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></svg></button>
+   <a class="btn btn--gold btn--sm nb-book" href="book.html">Book a Visit</a>
+   <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><i></i><i></i></button></div>
+ </header>
+ <div class="menu" id="menu" inert><div class="menu__in">
+  <nav class="menu__links" aria-label="Mobile menu">${[...pages, ['Book a Visit', 'book.html'], ['Saved pieces', 'wishlist.html']].map(([t, h], i) => `<a href="${h}" style="--i:${i}" ${h === here ? 'aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
+  <div class="menu__foot"><a class="btn btn--gold" href="${wa('Hello Nasim Aapa Kapadwala')}" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a><p>Dariyapur, Juhapura and Bhadra, Ahmedabad<br>Women's ethnic and bridal wear, since 1980</p></div>
+ </div></div>`);
 document.body.insertAdjacentHTML('beforeend', `
  <footer class="footer"><div class="wrap fg"><div><p class="script">Nasim Aapa Kapadwala</p><p style="opacity:.7;max-width:34ch">Women's ethnic and bridal wear in Ahmedabad, since 1980.</p></div>
  <div><h4>Explore</h4>${pages.map(([t,h]) => `<a href="${h}">${t}</a>`).join('')}<a href="book.html">Book a Visit</a><a href="wishlist.html">Saved pieces</a></div>
@@ -86,7 +97,7 @@ addEventListener('pageshow', () => curtain.classList.remove('on'));
 const header = $('#header'), prog = $('#prog'), topb = $('#topb'), pars = $$('[data-par]'); let lastY = 0, tick = false;
 function onScroll() {
   const y = scrollY, h = document.documentElement.scrollHeight - innerHeight;
-  header.classList.toggle('solid', y > 60); header.classList.toggle('hide', y > lastY && y > 500 && !$('#nav').classList.contains('open'));
+  header.classList.toggle('solid', y > 60); header.classList.toggle('hide', y > lastY && y > 500 && !$('#menu').classList.contains('open'));
   $('.bar')?.classList.toggle('low', !(y > lastY && y > 500));
   prog.style.transform = `scaleX(${h > 0 ? y / h : 0})`; topb.classList.toggle('on', y > 800);
   if (!calm) pars.forEach(el => { const r = el.parentElement.getBoundingClientRect(); if (r.bottom > 0 && r.top < innerHeight) el.style.transform = `translateY(${(r.top - innerHeight / 2) * -.08}px) scale(1.12)`; });
@@ -101,10 +112,35 @@ const applyTheme = t => { document.documentElement.dataset.theme = t; tbtn.setAt
 applyTheme(theme);
 tbtn.onclick = () => { theme = theme === 'dark' ? 'light' : 'dark'; applyTheme(theme); try { localStorage.setItem('nk-theme', theme); } catch (e) {} };
 
-/* mobile menu */
-const burger = $('#burger'), nav = $('#nav');
-const setNav = o => { nav.classList.toggle('open', o); burger.setAttribute('aria-expanded', o); document.body.style.overflow = o ? 'hidden' : ''; };
-burger.onclick = () => setNav(!nav.classList.contains('open'));
+/* navbar: full-screen menu, sliding hover pill, cursor glow, logo fallback */
+$('main')?.setAttribute('id', 'main');
+const burger = $('#burger'), menu = $('#menu'), links = $('#nav'), ind = $('.nb-ind', links), activeEl = $('a.cur-page', links);
+const setNav = o => {
+  menu.classList.toggle('open', o); burger.setAttribute('aria-expanded', o); burger.setAttribute('aria-label', o ? 'Close menu' : 'Open menu');
+  o ? menu.removeAttribute('inert') : menu.setAttribute('inert', ''); header.classList.toggle('menu-on', o); document.body.style.overflow = o ? 'hidden' : '';
+  if (o) $('a', menu).focus({preventScroll: true});
+};
+burger.onclick = () => setNav(!menu.classList.contains('open'));
+$$('a', menu).forEach(a => a.addEventListener('click', () => setNav(false)));
+addEventListener('keydown', e => { if (e.key === 'Escape' && menu.classList.contains('open')) { setNav(false); burger.focus(); } });
+const place = el => { if (!el) { ind.style.opacity = 0; return; } ind.style.width = el.offsetWidth + 'px'; ind.style.transform = `translateX(${el.offsetLeft}px)`; ind.style.opacity = 1; };
+addEventListener('resize', () => { if (innerWidth > 1080 && menu.classList.contains('open')) setNav(false); place(activeEl); });
+$$('a', links).forEach(a => { a.addEventListener('mouseenter', () => place(a)); a.addEventListener('focus', () => place(a)); });
+links.addEventListener('mouseleave', () => place(activeEl)); links.addEventListener('focusout', () => place(activeEl));
+ind.style.transition = 'none'; place(activeEl); requestAnimationFrame(() => requestAnimationFrame(() => ind.style.transition = ''));
+document.fonts && document.fonts.ready.then(() => place(activeEl));
+header.addEventListener('pointermove', e => header.style.setProperty('--mx', (e.clientX - header.getBoundingClientRect().left) + 'px'));
+const logoImg = $('.logo img'); logoImg.addEventListener('error', () => logoImg.remove());
+/* royal logo: tilts toward the cursor with a moving highlight, springs back, presses on tap */
+const brand = $('.nb-brand'), lg = $('.logo'), sv = (k, v) => lg.style.setProperty(k, v), cl = v => Math.max(-1, Math.min(1, v));
+if (fine && !calm) {
+  brand.addEventListener('pointermove', e => { const r = lg.getBoundingClientRect(), dx = (e.clientX - r.left - r.width / 2) / r.width, dy = (e.clientY - r.top - r.height / 2) / r.height;
+    sv('--ry', (cl(dx) * 18).toFixed(1) + 'deg'); sv('--rx', (-cl(dy) * 18).toFixed(1) + 'deg'); sv('--lx', (50 + dx * 70).toFixed(0) + '%'); sv('--ly', (50 + dy * 70).toFixed(0) + '%'); });
+  brand.addEventListener('pointerenter', () => sv('--sc', 1.08));
+  brand.addEventListener('pointerleave', () => { sv('--rx', '0deg'); sv('--ry', '0deg'); sv('--sc', 1); });
+}
+brand.addEventListener('pointerdown', () => sv('--sc', .92));
+['pointerup', 'pointercancel'].forEach(t => brand.addEventListener(t, () => sv('--sc', fine ? 1.08 : 1)));
 
 /* desktop only: cursor ring + magnetic buttons */
 if (fine && !calm) {
@@ -164,27 +200,27 @@ addEventListener('keydown', e => { if (lb.hidden) return; if (e.key === 'Escape'
 lb.addEventListener('touchstart', e => lx = e.touches[0].clientX, {passive: true});
 lb.addEventListener('touchend', e => { const d = e.changedTouches[0].clientX - lx; if (Math.abs(d) > 50) lshow(li + (d < 0 ? 1 : -1)); });
 
-/* HOME: hero arch slideshow (auto-advances when each progress bar finishes) */
-const slides = $$('.slide');
-if (slides.length) {
-  let cur = 0; const bars = $('#dots'), hero = $('#hero'), bg = $('#hbg'), cap = $('#cap'), cn = $('#cn'), peek = $('#peek');
-  slides.forEach((s, i) => {
-    const im = document.createElement('img'); im.src = $('img', s).getAttribute('src'); im.alt = ''; im.className = 'bgi'; bg.append(im);
-    const b = document.createElement('button'); b.setAttribute('aria-label', 'Show look ' + (i + 1)); b.onclick = () => go(i); bars.append(b);
-  });
+/* HOME: campaign hero (auto-advancing progress bars, thumbs, swipe, sparkles) */
+const cam = $('#cam');
+if (cam) {
+  const sl = $$('.cam__slide', cam), bars = $$('.cam__bar', cam), thumbs = $$('.cam__thumb', cam), num = $('#camnum'), DUR = 7000;
+  let cur = 0, el = 0, last = performance.now(), hold = calm;
   const go = i => {
-    cur = (i + slides.length) % slides.length; const s = slides[cur];
-    slides.forEach((x, k) => x.classList.toggle('on', k === cur)); $$('.bgi', bg).forEach((x, k) => x.classList.toggle('on', k === cur));
-    $$('button', bars).forEach(x => x.classList.remove('on')); void bars.offsetWidth; $$('button', bars)[cur].classList.add('on');
-    cap.innerHTML = `<small>${s.dataset.cat}</small>${s.dataset.cap}`; cap.classList.remove('in'); void cap.offsetWidth; cap.classList.add('in');
-    cn.textContent = String(cur + 1).padStart(2, '0'); $('img', peek).src = $('img', slides[(cur + 1) % slides.length]).getAttribute('src');
+    cur = (i + sl.length) % sl.length; el = 0;
+    sl.forEach((s, k) => { s.classList.toggle('on', k === cur); s.setAttribute('aria-hidden', k !== cur); });
+    thumbs.forEach((t, k) => t.classList.toggle('on', k === cur));
+    bars.forEach((b, k) => { b.firstElementChild.style.transform = `scaleX(${k < cur ? 1 : 0})`; b.setAttribute('aria-current', k === cur); });
+    num.textContent = String(cur + 1).padStart(2, '0'); num.classList.remove('tick'); void num.offsetWidth; num.classList.add('tick');
   };
-  bars.addEventListener('animationend', e => { if (e.animationName === 'fill') go(cur + 1); });
-  peek.onclick = () => go(cur + 1);
-  addEventListener('keydown', e => { if (scrollY < innerHeight / 2 && lb.hidden) { if (e.key === 'ArrowRight') go(cur + 1); if (e.key === 'ArrowLeft') go(cur - 1); } });
-  let sx = 0; hero.addEventListener('touchstart', e => sx = e.touches[0].clientX, {passive: true});
-  hero.addEventListener('touchend', e => { const d = e.changedTouches[0].clientX - sx; if (Math.abs(d) > 50) go(cur + (d < 0 ? 1 : -1)); });
-  if (fine && !calm) hero.addEventListener('pointermove', e => { const r = hero.getBoundingClientRect(); hero.style.setProperty('--mx', ((e.clientX - r.left) / r.width - .5).toFixed(3)); hero.style.setProperty('--my', ((e.clientY - r.top) / r.height - .5).toFixed(3)); });
+  bars.forEach((b, i) => b.onclick = () => go(i)); thumbs.forEach((t, i) => t.onclick = () => go(i));
+  (function loop(t) { const dt = Math.min(t - last, 100); last = t;
+    if (!hold && !document.hidden) { el += dt; bars[cur].firstElementChild.style.transform = `scaleX(${Math.min(el / DUR, 1)})`; if (el >= DUR) go(cur + 1); }
+    requestAnimationFrame(loop); })(last);
+  cam.addEventListener('pointerenter', () => hold = true); cam.addEventListener('pointerleave', () => hold = calm);
+  addEventListener('keydown', e => { if (scrollY < innerHeight / 2 && lb.hidden && !menu.classList.contains('open')) { if (e.key === 'ArrowRight') go(cur + 1); if (e.key === 'ArrowLeft') go(cur - 1); } });
+  let sx = 0; cam.addEventListener('touchstart', e => sx = e.touches[0].clientX, {passive: true});
+  cam.addEventListener('touchend', e => { const d = e.changedTouches[0].clientX - sx; if (Math.abs(d) > 50) go(cur + (d < 0 ? 1 : -1)); });
+  if (!calm) { const sp = $('.cam__sp', cam); for (let i = 0; i < 16; i++) { const s = document.createElement('span'); [['--x', (Math.random() * 100).toFixed(1) + '%'], ['--s', (4 + Math.random() * 8).toFixed(1) + 'px'], ['--d', (7 + Math.random() * 7).toFixed(1) + 's'], ['--dl', (-Math.random() * 12).toFixed(1) + 's'], ['--dx', (Math.random() * 80 - 40).toFixed(0) + 'px']].forEach(([k, v]) => s.style.setProperty(k, v)); sp.append(s); } }
   go(0);
 }
 const rail = $('#rail');
