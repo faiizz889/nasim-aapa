@@ -64,7 +64,7 @@ document.body.insertAdjacentHTML('afterbegin', `
   <span class="pl-logo"><i class="mono">NK</i><img src="images/logo.png" alt="" width="240" height="240"></span></div>
   <div class="pl-name">${letters('Nasim Aapa')}</div><div class="pl-sub">Kapadwala</div></div>
  <div class="pl-foot"><div class="pl-meta"><span>Ahmedabad</span><span>Since <b id="plyr">1900</b></span></div><div class="pl-tape">${[...Array(10).keys()].map(n => `<span>${n * 10}</span>`).join('')}</div></div></div>` : ''}
- <div class="prog" id="prog"></div><div class="curtain" id="curtain"></div><div class="cur" id="cur"></div>
+ <div class="prog" id="prog"></div><div class="curtain" id="curtain"></div>
  <a class="skip" href="#main">Skip to content</a>
  <header class="nb" id="header"><span class="nb-bg" aria-hidden="true"></span>
   <a href="index.html" class="nb-brand" aria-label="Nasim Aapa Kapadwala, home">
@@ -86,7 +86,10 @@ document.body.insertAdjacentHTML('beforeend', `
  <div><h4>Explore</h4>${pages.map(([t,h]) => `<a href="${h}">${t}</a>`).join('')}<a href="book.html">Book a Visit</a><a href="wishlist.html">Saved pieces</a></div>
  <div><h4>Branches</h4>${CONFIG.branches.map(b => `<a href="contact.html">${esc(b.n)}${b.main ? ' (Main)' : ''}</a>`).join('')}</div>
  <div><h4>Follow</h4><a href="#" target="_blank" rel="noopener noreferrer">Instagram</a><a href="#" target="_blank" rel="noopener noreferrer">Facebook</a><a href="#" target="_blank" rel="noopener noreferrer">YouTube</a></div></div>
- <p class="copy">© 2026 Nasim Aapa Kapadwala. Since 1980.</p></footer>
+ <p class="copy">© 2026 Nasim Aapa Kapadwala. Since 1980.</p>
+ <div class="credit"><span class="credit__rule" aria-hidden="true"></span>
+  <p class="credit__line">Made by <a class="credit__link" href="https://instagram.com/zyrac__" target="_blank" rel="noopener noreferrer" aria-label="Made by Zyrac, Instagram @zyrac__"><span class="credit__name">Zyrac</span><span class="credit__handle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.500" cy="6.500" r=".8" fill="currentColor"/></svg>@zyrac__</span></a></p>
+  <span class="credit__rule credit__rule--r" aria-hidden="true"></span></div></footer>
  <a class="fab" href="${wa('Hello Nasim Aapa Kapadwala')}" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.200 14.200c-.2.600-1.300 1.200-1.800 1.200-.5.100-1 .2-3.300-.7-2.800-1.200-4.600-4-4.700-4.200-.1-.2-1.100-1.500-1.100-2.800 0-1.400.7-2 .9-2.300.3-.3.600-.3.800-.3h.6c.2 0 .4 0 .6.500l.8 2c.1.200.1.400 0 .5l-.4.600-.3.300c-.1.200-.3.300-.1.600.2.300.8 1.300 1.700 2.100 1.200 1 2.100 1.300 2.400 1.500.3.100.4.100.6-.1l.8-1c.2-.3.400-.2.700-.1l1.900.9c.3.100.5.200.5.300.1.200.1.800-.1 1.400Z"/></svg></a>
  <button class="top" id="topb" aria-label="Back to top">↑</button>
  <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Image viewer"><button class="x" aria-label="Close">×</button><button class="p" aria-label="Previous">‹</button><img id="lbi" alt=""><button class="n" aria-label="Next">›</button><p id="lbc"></p></div>`);
@@ -153,18 +156,6 @@ if (fine && !calm) {
 }
 brand.addEventListener('pointerdown', () => sv('--sc', .92));
 ['pointerup', 'pointercancel'].forEach(t => brand.addEventListener(t, () => sv('--sc', fine ? 1.08 : 1)));
-
-/* desktop only: cursor ring + magnetic buttons */
-if (fine && !calm) {
-  const c = $('#cur'); let x = 0, y = 0, tx = 0, ty = 0;
-  addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; c.style.opacity = 1; });
-  (function f() { x += (tx - x) * .18; y += (ty - y) * .18; c.style.transform = `translate(${x}px,${y}px)`; requestAnimationFrame(f); })();
-  document.addEventListener('mouseover', e => c.classList.toggle('big', !!e.target.closest('a,button,.tile,.pcard__img')));
-  document.addEventListener('mousemove', e => {
-    const b = e.target.closest('.btn'); $$('.btn').forEach(k => { if (k !== b) k.style.translate = ''; });
-    if (b) { const r = b.getBoundingClientRect(); b.style.translate = `${(e.clientX - r.left - r.width / 2) * .2}px ${(e.clientY - r.top - r.height / 2) * .3}px`; }
-  });
-}
 
 /* reveal + counters */
 const io = new IntersectionObserver(es => es.forEach(e => {
