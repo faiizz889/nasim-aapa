@@ -50,10 +50,20 @@ document.documentElement.dataset.theme = theme;
 /* shared layout */
 const pages = [['Home','index.html'],['Collection','collection.html'],['Gallery','gallery.html'],['About','about.html'],['Contact','contact.html']];
 const here = location.pathname.split('/').pop() || 'index.html';
-const first = !sessionStorage.getItem('nk');
+/* preloader: home page only. Shows on a fresh visit and on refresh, not when clicking around the site */
+const nav0 = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+const sameSite = (() => { try { return !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (e) { return false; } })();
+const first = here === 'index.html' && !calm && ((nav0 && nav0.type === 'reload') || !sameSite);
 const letters = t => [...t].map((c, i) => `<span style="--i:${i}">${c === ' ' ? '&nbsp;' : esc(c)}</span>`).join('');
 document.body.insertAdjacentHTML('afterbegin', `
- ${first ? `<div class="loader" id="loader" aria-hidden="true"><svg viewBox="0 0 200 200" width="140" height="140"><circle cx="100" cy="100" r="92"/><circle cx="100" cy="100" r="82"/><text x="100" y="118" text-anchor="middle">NK</text></svg></div>` : ''}
+ ${first ? `<div class="loader" id="loader" aria-hidden="true"><i class="pl-l"></i><i class="pl-r"></i>
+ <div class="pl-c"><div class="pl-mark">
+  <svg class="pl-ring" viewBox="0 0 200 200"><defs><mask id="plm" maskUnits="userSpaceOnUse" x="-30" y="-30" width="260" height="260"><path class="pl-reveal" d="M196 100a96 96 0 1 1-192 0a96 96 0 1 1 192 0"/></mask></defs>
+   <g class="pl-rot"><path class="pl-ghost" d="M196 100a96 96 0 1 1-192 0a96 96 0 1 1 192 0"/><path class="pl-stitch" mask="url(#plm)" d="M196 100a96 96 0 1 1-192 0a96 96 0 1 1 192 0"/>
+   <g class="pl-needle"><path d="M196 128L194.4 104Q196 100.8 197.6 104Z"/><ellipse class="pl-eye" cx="196" cy="107" rx=".9" ry="2.6"/></g></g></svg>
+  <span class="pl-logo"><i class="mono">NK</i><img src="images/logo.png" alt="" width="240" height="240"></span></div>
+  <div class="pl-name">${letters('Nasim Aapa')}</div><div class="pl-sub">Kapadwala</div></div>
+ <div class="pl-foot"><div class="pl-meta"><span>Ahmedabad</span><span>Since <b id="plyr">1900</b></span></div><div class="pl-tape">${[...Array(10).keys()].map(n => `<span>${n * 10}</span>`).join('')}</div></div></div>` : ''}
  <div class="prog" id="prog"></div><div class="curtain" id="curtain"></div><div class="cur" id="cur"></div>
  <a class="skip" href="#main">Skip to content</a>
  <header class="nb" id="header"><span class="nb-bg" aria-hidden="true"></span>
@@ -82,7 +92,9 @@ document.body.insertAdjacentHTML('beforeend', `
  <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Image viewer"><button class="x" aria-label="Close">×</button><button class="p" aria-label="Previous">‹</button><img id="lbi" alt=""><button class="n" aria-label="Next">›</button><p id="lbc"></p></div>`);
 
 /* start: loader, then ready (triggers headline animation) */
-if (first) { sessionStorage.setItem('nk', 1); setTimeout(() => { $('#loader').classList.add('off'); document.body.classList.add('ready'); }, 1600); }
+if (first) { const yr = $('#plyr'), li = $('.pl-logo img'), t0 = performance.now(); li.addEventListener('error', () => li.remove());
+  (function f(t) { const k = Math.min((t - t0) / 2300, 1); yr.textContent = Math.round(1900 + 80 * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); })(t0);
+  document.body.style.overflow = 'hidden'; setTimeout(() => { $('#loader').classList.add('off'); document.body.classList.add('ready'); document.body.style.overflow = ''; }, 2900); }
 else requestAnimationFrame(() => document.body.classList.add('ready'));
 
 /* page transitions */
