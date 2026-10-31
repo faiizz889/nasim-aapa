@@ -440,9 +440,8 @@ html:not([data-theme=dark]) .copy{border-top-color:rgba(11,10,9,.12);opacity:.75
 .ready .logo{animation:logoIn 1.1s cubic-bezier(.34,1.4,.64,1) .1s backwards}
 @keyframes logoIn{from{opacity:0;transform:scale(.55) rotate(-25deg);filter:blur(6px)}}
 .logo::before{inset:-1px}.logo::after{inset:-4px}
-.gems{position:absolute;inset:-8px;border-radius:50%;pointer-events:none;animation:spin 18s linear infinite reverse;
-background:radial-gradient(circle at 50% 3px,#F5DE94 0 2.2px,transparent 3px),radial-gradient(circle at calc(100% - 3px) 50%,#F5DE94 0 2.2px,transparent 3px),radial-gradient(circle at 50% calc(100% - 3px),#F5DE94 0 2.2px,transparent 3px),radial-gradient(circle at 3px 50%,#F5DE94 0 2.2px,transparent 3px)}
-.nb-brand:hover .gems{animation-duration:6s}
+
+
 .shine{position:absolute;inset:4px;border-radius:50%;z-index:2;pointer-events:none;opacity:0;transition:opacity .4s;background:radial-gradient(circle at var(--lx,30%) var(--ly,20%),rgba(255,255,255,.6),transparent 55%)}
 .nb-brand:hover .shine{opacity:1}
 .logo .mono{font-size:calc(var(--lg) * .36);transition:font-size .6s var(--ease)}
@@ -459,7 +458,7 @@ body:not(.ready) .nm1 span{opacity:0}
 .bar.low{top:98px}
 @media(min-width:1600px){.logo{--lg:68px}.nb.solid .logo{--lg:56px}.nm1{font-size:32px}.nm small{font-size:12px}}
 @media(max-width:1080px){.logo{--lg:54px}.nb.solid .logo{--lg:46px}}
-@media(max-width:700px){.logo{--lg:46px}.nb.solid .logo{--lg:42px}.nm1{font-size:21px}.nm small{font-size:9px;letter-spacing:.3em}.bar.low{top:84px}.menu__in{padding-top:112px}.gems{inset:-6px}}
+@media(max-width:700px){.logo{--lg:46px}.nb.solid .logo{--lg:42px}.nm1{font-size:21px}.nm small{font-size:9px;letter-spacing:.3em}.bar.low{top:84px}.menu__in{padding-top:112px}}
 @media(max-width:360px){.logo{--lg:42px}.nb.solid .logo{--lg:38px}.nm1{font-size:19px}}
 @media(prefers-reduced-motion:reduce){body:not(.ready) .nm1 span{opacity:1}}
 
@@ -520,19 +519,6 @@ html:not([data-theme=dark]) .loader,[data-theme=dark] .loader{background:transpa
 .btn:active{transform:translateY(1px)}
 /* ===== Footer credit: Made by Zyrac ===== */
 .footer .copy{margin-top:40px;padding-bottom:14px}
-.credit{display:flex;align-items:center;justify-content:center;gap:clamp(12px,3vw,32px);padding:4px var(--pad) max(26px,env(safe-area-inset-bottom))}
-.credit__rule{flex:1;max-width:240px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
-.credit__rule--r{background:linear-gradient(270deg,transparent,var(--gold))}
-.credit__line{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 12px;font:italic 400 clamp(15px,1.5vw,18px)/1.4 var(--serif);text-align:center}
-.footer .credit .credit__link{position:relative;display:inline-flex;align-items:center;gap:12px;padding:6px 18px 6px 16px;border:1px solid rgba(166,124,46,.55);border-radius:999px;font-style:normal;opacity:1;transition:border-color .3s,background .4s}
-.footer .credit .credit__link::before{content:"";position:absolute;inset:6px;border:1px dashed var(--gold);border-radius:999px;opacity:0;transition:opacity .35s,inset .5s var(--ease)}
-.footer .credit .credit__link:hover{border-color:var(--gold);background:rgba(201,162,75,.12)}
-.footer .credit .credit__link:hover::before{opacity:.8;inset:3px}
-.credit__name{font:400 clamp(26px,2.6vw,32px)/1 var(--script);color:#8A6420}
-[data-theme=dark] .credit__name{color:var(--gold-hi)}
-.credit__handle{display:inline-flex;align-items:center;gap:7px;font:500 12px/1 var(--sans);letter-spacing:.14em}
-.credit__handle svg{width:16px;height:16px;flex:none}
-@media(max-width:560px){.credit__rule{display:none}.credit__line{flex-direction:column;gap:6px}}
 
 /* ===== INNER PAGE BANNER: compact landscape band, woven jaali lattice + running stitch (replaces the big rings) ===== */
 .phero{--stitch:#B8862B;--weave:rgba(138,100,32,.16);min-height:0;display:block;padding:clamp(108px,15vh,132px) var(--pad) 54px}
@@ -552,3 +538,46 @@ background:repeating-linear-gradient(90deg,var(--stitch) 0 10px,transparent 10px
 @media(min-width:900px){.phero>div{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);column-gap:56px;align-items:end}
 .phero .hero__lede{grid-column:2;grid-row:1/3;margin:0 0 8px;justify-self:end;text-align:left}}
 @media(max-width:700px){.phero{padding:104px var(--pad) 46px}.phero::after{bottom:18px}}
+
+/* preloader: no centre seam (borders removed, panels overlap) */
+.pl-l,.pl-r{border:0;width:50.7%}
+/* placeholder artwork fades in softly */
+img[data-fb]{animation:fbIn .7s var(--ease)}
+@keyframes fbIn{from{opacity:0}}
+
+/* ===== NAVBAR v4: premium frame, progress line, active marker, spring entrance (gems removed) ===== */
+.prog{display:none}
+.nb-bg{box-shadow:0 16px 36px -18px rgba(11,10,9,.45),inset 0 0 0 1px rgba(255,255,255,.35)}
+.nb-bg::before{content:"";position:absolute;left:34px;right:34px;bottom:0;height:2px;border-radius:2px;background:linear-gradient(90deg,#A67C2E,#F5DE94);transform:scaleX(var(--p,0));transform-origin:left}
+.nb::after{content:"";position:absolute;inset:4px;border-radius:999px;border:1px solid rgba(166,124,46,.24);pointer-events:none;z-index:-1}
+.nb-links a.cur-page::after{content:"";position:absolute;left:50%;bottom:3px;width:4px;height:4px;background:var(--nb-acc);transform:translateX(-50%) rotate(45deg)}
+.ready .nb{animation:nbIn 1.1s cubic-bezier(.34,1.2,.64,1) .15s backwards}
+@keyframes nbIn{from{transform:translateY(-130%);opacity:0}}
+.nb-book{gap:8px}
+.nb-book svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .5s var(--ease)}
+.nb-book:hover svg{transform:translateX(4px)}
+.theme.flip svg{animation:flip .7s var(--ease)}
+@keyframes flip{from{transform:rotate(-120deg) scale(.4);opacity:0}}
+/* ===== Footer maker's label: a sewn-in woven label for Zyrac ===== */
+.credit{display:flex;justify-content:center;padding:10px var(--pad) max(34px,env(safe-area-inset-bottom))}
+.footer .label{position:relative;display:grid;gap:22px;width:min(100%,660px);padding:28px clamp(20px,4vw,34px);background:#FFFDF8;border:1px solid rgba(166,124,46,.65);color:#0B0A09;transform:rotate(-.8deg);transition:transform .8s var(--ease),box-shadow .6s;box-shadow:0 22px 34px -26px rgba(11,10,9,.6)}
+[data-theme=dark] .footer .label{background:#1C1A17;color:#F6F1E7}
+.label::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(45deg,rgba(138,100,32,.07) 0 1px,transparent 1px 6px),repeating-linear-gradient(-45deg,rgba(138,100,32,.07) 0 1px,transparent 1px 6px)}
+.label__seam{position:absolute;inset:7px;border:1px dashed rgba(166,124,46,.8);pointer-events:none;transition:inset .6s var(--ease)}
+.footer .label:hover{transform:rotate(0) translateY(-4px);box-shadow:0 30px 40px -26px rgba(138,100,32,.75)}
+.label:hover .label__seam{inset:4px}
+.label__l{position:relative;display:flex;flex-direction:column;gap:6px}
+.label__top{font:500 11px/1 var(--sans);letter-spacing:.32em;text-transform:uppercase;opacity:.75}
+.label__name{font:400 clamp(50px,7vw,72px)/.9 var(--script);color:#8A6420}
+[data-theme=dark] .label__name{color:var(--gold-hi)}
+.label__r{position:relative}
+.label__pitch{font:italic 400 clamp(18px,2vw,22px)/1.35 var(--serif);max-width:26ch}
+.footer .label .label__link{display:inline-flex;align-items:center;gap:10px;margin-top:14px;padding:13px 22px;background:#0B0A09;color:#E6C77A;opacity:1;font:500 13px/1 var(--sans);letter-spacing:.14em;transition:background .4s,color .4s}
+.footer .label .label__link::after{content:"";position:absolute;inset:0}
+.label__link svg{width:17px;height:17px;flex:none}.label__go{transition:transform .5s var(--ease)}
+.footer .label .label__link:hover{background:#B8862B;color:#0B0A09}.label:hover .label__go{transform:translateX(5px)}
+[data-theme=dark] .footer .label .label__link{background:var(--gold);color:#0B0A09}
+[data-theme=dark] .footer .label .label__link:hover{background:#F5DE94}
+@media(min-width:720px){.footer .label{grid-template-columns:auto 1fr;align-items:center;gap:0}
+.label__l{padding-right:34px;margin-right:34px;border-right:1px dashed rgba(166,124,46,.7);align-self:stretch;justify-content:center}}
+@media(prefers-reduced-motion:reduce){.footer .label{transform:none}}

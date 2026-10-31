@@ -41,6 +41,39 @@ const CONFIG = {
 };
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const wa = t => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(t)}`;
+
+/* BRAND PLACEHOLDERS: if a photo file is missing, show on-brand artwork (never a broken image).
+   Optional: CONFIG.photoFallbacks = {'hero-1': 'https://...'} is tried first, then the artwork. */
+const FBK = new Map(), lat = (n, f) => Array.from({length: n}, (_, i) => f(i)).join('');
+const MOTIF = {
+  bridal: () => '<path d="M160 620V340a140 140 0 0 1 280 0V620Z"/><path d="M180 620V342a120 120 0 0 1 240 0V620" opacity=".6"/><circle cx="300" cy="360" r="62"/><circle cx="300" cy="360" r="34"/>' + lat(12, i => { const a = i * Math.PI / 6, p = (r, k) => (300 + r * Math.cos(a)).toFixed(1) + ' ' + (360 + r * Math.sin(a)).toFixed(1); return `<path d="M${p(34)}L${p(62)}"/>`; }),
+  party: () => '<path d="M160 620V340a140 140 0 0 1 280 0V620Z"/><path d="M300 270l56 90-56 90-56-90Z"/><path d="M300 305l30 55-30 55-30-55Z"/><circle cx="300" cy="360" r="5"/>',
+  materials: () => lat(6, i => `<path d="M110 ${250 + i * 58}q47-44 95 0t95 0 95 0 95 0"/>`),
+  casual: () => '<path d="M300 300a24 24 0 1 1 24 24c-14 4-24 12-24 26L160 460q-26 16 0 32h280q26-16 0-32L300 350"/>',
+  drape: () => lat(4, i => `<path d="M130 ${290 + i * 70}c58 64 118-64 176 0s118 64 164 0"/>`),
+  stitch: () => '<path d="M130 500C230 380 370 600 470 440" stroke-dasharray="16 12"/><path d="M420 250L500 480"/><ellipse cx="428" cy="272" rx="5" ry="14" transform="rotate(-20 428 272)"/>',
+  shop: fg => `<path d="M140 620V330a160 160 0 0 1 320 0V620Z"/><path d="M165 620V335a135 135 0 0 1 270 0V620" opacity=".6"/><text x="300" y="420" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="92" fill="${fg}" stroke="none">NK</text>`
+};
+const FBMAP = {'hero-1':['bridal','The Bridal Edit',1],'hero-2':['party','Festive Formals',1],'hero-3':['materials','Dress Materials',1],'cat-bridal':['bridal','Bridal Lehengas'],'cat-party':['party','Party Wear'],'cat-materials':['materials','Dress Materials'],'cat-readymade':['casual','Readymade Suits'],'cat-sharara':['drape','Gowns & Sharara'],'cat-kids':['drape','Kids & Occasion'],'cat-dupatta':['drape','Dupattas'],stitching:['stitch','Made to Measure'],about:['shop','Our Showroom']};
+const keyOf = src => String(src).split('?')[0].split('/').pop().replace(/\.\w+$/, '');
+function fbFor(src) {
+  const key = keyOf(src); if (FBK.has(key)) return FBK.get(key);
+  let m = FBMAP[key];
+  if (!m) { const p = CONFIG.products.find(p => keyOf(p.i) === key); m = p ? [{bridal: 'bridal', party: 'party', casual: 'casual', materials: 'materials'}[p.c] || 'drape', p.n] : ['drape', 'Nasim Aapa Kapadwala']; }
+  const dark = !!m[2], bg = dark ? ['#2A2012', '#5A4222'] : ['#F1E7CF', '#DCC89B'], fg = dark ? '#E6C77A' : '#8A6420', label = esc(m[1]), fs = m[1].length > 18 ? 34 : 44;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${bg[0]}"/><stop offset="1" stop-color="${bg[1]}"/></linearGradient><pattern id="l" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0H26M0 0V26" stroke="${fg}" stroke-width=".7" opacity=".3"/></pattern></defs><rect width="600" height="800" fill="url(#g)"/><rect width="600" height="800" fill="url(#l)"/><text x="300" y="120" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="46" fill="${fg}">NK</text><g fill="none" stroke="${fg}" stroke-width="2.2" stroke-linecap="round">${MOTIF[m[0]](fg)}</g><text x="300" y="${m[1].length > 18 ? 690 : 700}" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="${fs}" fill="${fg}">${label}</text><text x="300" y="742" text-anchor="middle" font-family="Georgia,serif" font-size="14" letter-spacing="6" fill="${fg}" opacity=".85">NASIM AAPA KAPADWALA</text></svg>`;
+  const uri = 'data:image/svg+xml,' + encodeURIComponent(svg); FBK.set(key, uri); return uri;
+}
+function swapFb(img) {
+  const cur = img.getAttribute('src') || ''; if (!cur || img.closest('.logo,.pl-logo') || /logo\.png/.test(cur)) return;
+  const orig = img.dataset.orig || cur, stage = +img.dataset.fb || 0, online = (CONFIG.photoFallbacks || {})[keyOf(orig)];
+  img.dataset.orig = orig;
+  if (stage === 0 && online) { img.dataset.fb = 1; img.src = online; return; }
+  if (stage < 2) { img.dataset.fb = 2; img.src = fbFor(orig); }
+}
+document.addEventListener('error', e => { if (e.target.tagName === 'IMG') swapFb(e.target); }, true);
+const sweep = () => $$('img').forEach(i => { if (i.complete && !i.naturalWidth && i.getAttribute('src') && !i.dataset.fb) swapFb(i); });
+sweep(); addEventListener('load', sweep);
 const fine = matchMedia('(hover:hover) and (pointer:fine)').matches, calm = matchMedia('(prefers-reduced-motion:reduce)').matches;
 document.documentElement.classList.add('js');
 /* theme: saved choice, otherwise light */
@@ -68,13 +101,13 @@ document.body.insertAdjacentHTML('afterbegin', `
  <a class="skip" href="#main">Skip to content</a>
  <header class="nb" id="header"><span class="nb-bg" aria-hidden="true"></span>
   <a href="index.html" class="nb-brand" aria-label="Nasim Aapa Kapadwala, home">
-   <span class="logo"><span class="gems" aria-hidden="true"></span><i class="mono" aria-hidden="true">NK</i><img src="images/logo.png" alt="" width="64" height="64"><span class="shine" aria-hidden="true"></span></span>
+   <span class="logo"><i class="mono" aria-hidden="true">NK</i><img src="images/logo.png" alt="" width="64" height="64"><span class="shine" aria-hidden="true"></span></span>
    <b class="nm"><span class="nm1" aria-hidden="true">${letters('Nasim Aapa')}</span><small>Kapadwala</small></b>
   </a>
   <nav class="nb-links" id="nav" aria-label="Main"><span class="nb-ind" aria-hidden="true"></span>${pages.map(([t,h]) => `<a href="${h}" ${h === here ? 'class="cur-page" aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
   <div class="nb-end"><a class="wishlink" href="wishlist.html" aria-label="Saved pieces"><svg viewBox="0 0 24 24"><path d="M12 21s-8-5.200-8-11a4.500 4.500 0 0 1 8-2.800A4.500 4.500 0 0 1 20 10c0 5.800-8 11-8 11Z"/></svg><span id="wc" hidden></span></a>
    <button class="theme" id="theme" aria-label="Switch to dark mode"><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.500A8 8 0 0 1 9.500 4 8 8 0 1 0 20 14.500Z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/></svg></button>
-   <a class="btn btn--gold btn--sm nb-book" href="book.html">Book a Visit</a>
+   <a class="btn btn--gold btn--sm nb-book" href="book.html">Book a Visit<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><i></i><i></i></button></div>
  </header>
  <div class="menu" id="menu" inert><div class="menu__in">
@@ -87,9 +120,12 @@ document.body.insertAdjacentHTML('beforeend', `
  <div><h4>Branches</h4>${CONFIG.branches.map(b => `<a href="contact.html">${esc(b.n)}${b.main ? ' (Main)' : ''}</a>`).join('')}</div>
  <div><h4>Follow</h4><a href="#" target="_blank" rel="noopener noreferrer">Instagram</a><a href="#" target="_blank" rel="noopener noreferrer">Facebook</a><a href="#" target="_blank" rel="noopener noreferrer">YouTube</a></div></div>
  <p class="copy">© 2026 Nasim Aapa Kapadwala. Since 1980.</p>
- <div class="credit"><span class="credit__rule" aria-hidden="true"></span>
-  <p class="credit__line">Made by <a class="credit__link" href="https://instagram.com/zyrac__" target="_blank" rel="noopener noreferrer" aria-label="Made by Zyrac, Instagram @zyrac__"><span class="credit__name">Zyrac</span><span class="credit__handle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.500" cy="6.500" r=".8" fill="currentColor"/></svg>@zyrac__</span></a></p>
-  <span class="credit__rule credit__rule--r" aria-hidden="true"></span></div></footer>
+ <div class="credit"><div class="label">
+  <span class="label__seam" aria-hidden="true"></span>
+  <div class="label__l"><span class="label__top">Website crafted by</span><span class="label__name">Zyrac</span></div>
+  <div class="label__r"><p class="label__pitch">Want a website like this for your business?</p>
+   <a class="label__link" href="https://instagram.com/zyrac__" target="_blank" rel="noopener noreferrer" aria-label="Message Zyrac on Instagram, @zyrac__"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.500" cy="6.500" r=".8" fill="currentColor"/></svg><b>@zyrac__</b><span class="label__go" aria-hidden="true">&rarr;</span></a></div>
+ </div></div></footer>
  <a class="fab" href="${wa('Hello Nasim Aapa Kapadwala')}" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm5.200 14.200c-.2.600-1.300 1.200-1.800 1.200-.5.100-1 .2-3.300-.7-2.800-1.200-4.600-4-4.700-4.200-.1-.2-1.100-1.500-1.100-2.800 0-1.400.7-2 .9-2.300.3-.3.600-.3.800-.3h.6c.2 0 .4 0 .6.500l.8 2c.1.200.1.400 0 .5l-.4.600-.3.300c-.1.200-.3.300-.1.600.2.300.8 1.300 1.700 2.100 1.200 1 2.100 1.300 2.400 1.500.3.100.4.100.6-.1l.8-1c.2-.3.400-.2.700-.1l1.900.9c.3.100.5.200.5.300.1.200.1.800-.1 1.400Z"/></svg></a>
  <button class="top" id="topb" aria-label="Back to top">↑</button>
  <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Image viewer"><button class="x" aria-label="Close">×</button><button class="p" aria-label="Previous">‹</button><img id="lbi" alt=""><button class="n" aria-label="Next">›</button><p id="lbc"></p></div>`);
@@ -114,7 +150,7 @@ function onScroll() {
   const y = scrollY, h = document.documentElement.scrollHeight - innerHeight;
   header.classList.toggle('solid', y > 60); header.classList.toggle('hide', y > lastY && y > 500 && !$('#menu').classList.contains('open'));
   $('.bar')?.classList.toggle('low', !(y > lastY && y > 500));
-  prog.style.transform = `scaleX(${h > 0 ? y / h : 0})`; topb.classList.toggle('on', y > 800);
+  prog.style.transform = `scaleX(${h > 0 ? y / h : 0})`; header.style.setProperty('--p', (h > 0 ? Math.min(y / h, 1) : 0).toFixed(4)); topb.classList.toggle('on', y > 800);
   if (!calm) pars.forEach(el => { const r = el.parentElement.getBoundingClientRect(); if (r.bottom > 0 && r.top < innerHeight) el.style.transform = `translateY(${(r.top - innerHeight / 2) * -.08}px) scale(1.12)`; });
   lastY = y; tick = false;
 }
@@ -125,7 +161,7 @@ topb.onclick = () => scrollTo({top: 0, behavior: 'smooth'});
 const tbtn = $('#theme');
 const applyTheme = t => { document.documentElement.dataset.theme = t; tbtn.setAttribute('aria-label', t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'); tbtn.setAttribute('aria-pressed', t === 'dark'); };
 applyTheme(theme);
-tbtn.onclick = () => { theme = theme === 'dark' ? 'light' : 'dark'; applyTheme(theme); try { localStorage.setItem('nk-theme', theme); } catch (e) {} };
+tbtn.onclick = () => { tbtn.classList.remove('flip'); void tbtn.offsetWidth; tbtn.classList.add('flip'); theme = theme === 'dark' ? 'light' : 'dark'; applyTheme(theme); try { localStorage.setItem('nk-theme', theme); } catch (e) {} };
 
 /* navbar: full-screen menu, sliding hover pill, cursor glow, logo fallback */
 $('main')?.setAttribute('id', 'main');
